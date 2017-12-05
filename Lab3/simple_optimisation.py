@@ -1,5 +1,33 @@
 from math import sqrt
 
+def research(f,xp, dx=0.5):
+    x = list(xp)
+    for i in range(len(x)):
+        P = f(x)
+        x[i] += dx
+        N = f(x)
+        if N > P:
+            x[i] -= 2*dx
+            N = f(x)
+            if N > P:
+                x[i] += dx
+    return x
+
+def hooke_jeeves_search(f,x0,e=10e-6):
+    xp,xb = list(x0), list(x0)
+    dx = 0.5
+    
+    while(dx > 0.5*e):
+        xn = research(f,xp,dx)
+        if f(xn)<f(xb):
+            xp = [2*xn[j] - xb[j] for j in range(len(xb))]
+            xb = xn
+        else:
+            dx *= 0.5
+            xp = list(xb)
+            
+    return xb
+
 def unimodal_interval(f, starting_point, h = 1):
     l = starting_point - h
     r = starting_point + h
